@@ -3,14 +3,12 @@
 import re
 from transformers import pipeline
 
-# 1) Initialize the Hugging Face sentiment pipeline once at import time
-#    (You may need to set TRANSFORMERS_NO_TF=1 in your environment before running.)
+# Initialize once at import time
 SENTIMENT_PIPELINE = pipeline(
     "sentiment-analysis",
     model="distilbert-base-uncased-finetuned-sst-2-english"
 )
 
-# 2) Use our expanded keyword lists for each aspect:
 ASPECT_KEYWORDS = {
     "service": [
         "service", "waiter", "server", "staff", "attentive", "rude",
@@ -38,60 +36,86 @@ ASPECT_KEYWORDS = {
     ],
 }
 
-
 def extract_aspects(text: str):
     """
-    Return a list of aspects found in 'text' by matching keywords.
-    If none match, return ['general'].
+    Keyword‐based aspect extraction. If no match, returns ['general'].
     """
     text_lower = text.lower()
     found = []
     for aspect, keywords in ASPECT_KEYWORDS.items():
         for kw in keywords:
-            # Word‐boundary search so we don't match 'steep' inside 'steeper'
             if re.search(rf"\b{re.escape(kw)}\b", text_lower):
                 found.append(aspect)
                 break
     return list(set(found)) if found else ["general"]
 
-
-def analyze_single_review(text: str):
+def analyze_single_review(text: str, min_confidence: float = 0.0):
     """
-    Runs HF pipeline on up to the first 512 chars of `text`, then extracts aspects.
-    Returns a dict with keys: text, aspects (list), sentiment (str), score (float).
+    Run HF sentiment pipeline over up to 512 chars of `text`, then extract aspects.
+    Only keep sentiment if its confidence ≥ min_confidence.
+    Returns a dict: {
+      'text': str,
+      'aspects': List[str],
+      'sentiment': "POSITIVE" or "NEGATIVE",
+      'score': float
+    }
     """
     truncated = text[:512]
     result = SENTIMENT_PIPELINE(truncated)[0]
-    aspects = extract_aspects(text)
+    raw_label = result["label"]           # "POSITIVE" or "NEGATIVE"
+    raw_score = float(result["score"])    # confidence
+
+    # If the model isn’t confident enough, treat as “neutral” → always positive
+    if raw_score < min_confidence:
+        aspects = ["general"]
+        overall_sentiment = "POSITIVE"
+        overall_score = raw_score
+    else:
+        aspects = extract_aspects(text)
+        overall_sentiment = raw_label
+        overall_score = raw_score
+
     return {
         "text": text,
         "aspects": aspects,
-        "sentiment": result["label"],  # "POSITIVE" or "NEGATIVE"
-        "score": result["score"],      # confidence 0–1
+        "sentiment": overall_sentiment,
+        "score": overall_score
     }
 
+def batch_analyze(df, text_col="review_text", batch_size=32, min_confidence: float = 0.0):
+    """
+    Apply `analyze_single_review` to every row in df[text_col] with batching.
+    Returns a new DataFrame with added columns: 'aspects', 'sentiment', 'score'.
+    """
+    import pandas as pd
 
-def batch_analyze(df, text_col="review_text", batch_size=32):
-    """
-    Apply `analyze_single_review` to every row in df[text_col] in batches.
-    Returns a new DataFrame with added columns: 'aspects', 'sentiment', and 'score'.
-    """
     records = []
     texts = df[text_col].astype(str).tolist()
 
     for i in range(0, len(texts), batch_size):
         batch = texts[i : i + batch_size]
-        # Hugging Face sentiment pipeline can process a list:
         results = SENTIMENT_PIPELINE(batch, batch_size=batch_size)
 
         for idx, res in enumerate(results):
             text = batch[idx]
-            aspects = extract_aspects(text)
+            label = res["label"]
+            score = float(res["score"])
+
+            if score < min_confidence:
+                # If confidence too low, fallback to general/positive
+                aspects = ["general"]
+                sentiment = "POSITIVE"
+                final_score = score
+            else:
+                aspects = extract_aspects(text)
+                sentiment = label
+                final_score = score
+
             records.append({
                 "text": text,
                 "aspects": aspects,
-                "sentiment": res["label"],
-                "score": res["score"],
+                "sentiment": sentiment,
+                "score": final_score
             })
 
     df_out = df.reset_index(drop=True).copy()
