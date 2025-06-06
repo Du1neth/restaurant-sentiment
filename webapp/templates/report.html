@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Sentiment Report for {{ filename }}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; line-height: 1.5; }
+    h1, h2 { color: #333; }
+    table { border-collapse: collapse; margin-top: 1em; }
+    th, td { border: 1px solid #ccc; padding: 0.5em 1em; }
+    th { background: #f5f5f5; }
+    ul { margin-top: 1em; }
+  </style>
+</head>
+<body>
+  <h1>Sentiment Analysis Report</h1>
+  <p><strong>Uploaded file:</strong> {{ filename }}</p>
+  <p><strong>Total Reviews Analyzed:</strong> {{ total_reviews }}</p>
+
+  <h2>Aspect Sentiment Summary</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Aspect</th>
+        <th># Positive</th>
+        <th># Negative</th>
+        <th>Negative Ratio</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for aspect, counts in summary.items() %}
+        {% set pos, neg = counts %}
+        {% set total = pos + neg %}
+        <tr>
+          <td>{{ aspect.capitalize() }}</td>
+          <td>{{ pos }}</td>
+          <td>{{ neg }}</td>
+          <td>{{ "%.2f"|format(neg / total if total > 0 else 0) }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>Actionable Suggestions</h2>
+  <ol>
+    {% for s in suggestions %}
+      <li>{{ s }}</li>
+    {% endfor %}
+  </ol>
+
+  <p><a href="{{ url_for('index') }}">Upload another CSV</a></p>
+</body>
+</html>

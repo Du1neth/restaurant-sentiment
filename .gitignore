@@ -1,0 +1,25 @@
+# Byte‐compiled / IDE files
+__pycache__/
+*.py[cod]
+*.env
+.vscode/
+.idea/
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Data files (if you don’t want to store them in Git)
+data/*.csv
+
+# Uploads folder (Flask saves user‐uploaded CSVs here)
+uploads/
+
+# OS clutter
+.DS_Store
+Thumbs.db

@@ -8,7 +8,7 @@ from src.report_gen import aggregate_aspect_sentiments, generate_actionable_phra
 def main():
     # 1) Load the first 50 reviews for a quick test
     df_full = load_reviews("data/restaurants_reviews.csv")
-    df_small = df_full.head(50)
+    df_small = df_full
 
     # 2) Tag each row with aspects + sentiment (batch in size 16 for speed)
     df_tagged = batch_analyze(df_small, text_col="review_text", batch_size=16)
@@ -25,8 +25,8 @@ def main():
         neg_ratio = neg / total if total > 0 else 0
         print(f"- {aspect:12s} → {pos} positive, {neg} negative  (neg_ratio={neg_ratio:.2f})")
 
-    # 5) Generate actionable phrases (using a 30% threshold)
-    suggestions = generate_actionable_phrases(aspect_counts, threshold_pct=0.3)
+        suggestions = generate_actionable_phrases(aspect_counts, threshold_pct=0.4)
+
 
     # 6) Print the suggestions
     print("\n=== Actionable Suggestions (threshold=0.3) ===")
