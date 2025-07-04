@@ -7,4 +7,3 @@ This project ingests a CSV of restaurant reviews and produces a brief “actiona
 3. Aggregating positive vs. negative counts per aspect.
 4. Emitting a short list of suggestions (e.g., “Improve staff training,” “Revise menu items,” etc.).
 
-**Folder Structure**  
