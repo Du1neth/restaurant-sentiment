@@ -1,0 +1,24 @@
+{
+  "restaurant_name": "Olive Garden",
+  "analysis_date": "20250706_221543",
+  "sources_analyzed": 2,
+  "analysis": {
+    "individual_reviews": [],
+    "overall_sentiment": "No reviews available to assess sentiment.",
+    "overall_rating": 3.0,
+    "strengths": [
+      "Convenient online ordering and pickup options (ToGo and Carside Delivery).",
+      "Popular dishes like Fettuccine Alfredo and Minestrone are well-received."
+    ],
+    "weaknesses": [
+      "Lack of specific review text to analyze customer sentiment and identify specific issues."
+    ],
+    "actionable_insights": [
+      "Actively solicit customer reviews on platforms like Yelp to gather feedback.",
+      "Monitor online reviews regularly to identify trends in customer satisfaction and address any recurring issues.",
+      "Highlight positive feedback (once available) in marketing materials and staff training to reinforce best practices.",
+      "Use negative feedback (once available) to identify areas for improvement in food quality, service, or atmosphere."
+    ],
+    "summary": "This analysis is based on the available information from Yelp.  The lack of actual customer reviews makes it difficult to assess specific strengths and weaknesses. The restaurant offers online ordering and pickup, and has several popular dishes. Actively seeking and analyzing customer reviews is crucial for continuous improvement."
+  }
+}

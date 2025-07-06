@@ -1,0 +1,42 @@
+{
+  "restaurant_name": "Joe's Pizza",
+  "total_reviews": 5,
+  "overall_rating": 4.0,
+  "sentiment_distribution": {
+    "POSITIVE": 4,
+    "NEGATIVE": 0,
+    "NEUTRAL": 1
+  },
+  "key_aspects": [
+    {
+      "aspect": "food_quality",
+      "positive": 3,
+      "negative": 0,
+      "neutral": 0,
+      "sentiment_ratio": 0.0
+    },
+    {
+      "aspect": "taste",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "sentiment_ratio": 0.0
+    }
+  ],
+  "strengths": [
+    "**High Overall Rating:** A 4.0/5 rating suggests strong customer satisfaction.",
+    "**Positive Sentiment Dominance:** The overwhelming positive sentiment (4 positive reviews, 0 negative) indicates that customers generally have a good experience.",
+    "**Delicious Taste:** Positive mentions of taste are encouraging.",
+    "**Sourcing high-quality ingredients:**  Emphasize the use of fresh, local ingredients (if applicable) in marketing materials.",
+    "**Consistency:** Ensure consistent preparation and cooking processes to maintain the high food quality across all orders."
+  ],
+  "weaknesses": [
+    "**Limited Data:** The sample size is small (5 reviews total).  Drawing definitive conclusions from this data is risky. More data is needed for a robust analysis.",
+    "**Absence of Negative Feedback:** While seemingly positive, the lack of any negative feedback might indicate a bias in the data (e.g., only highly satisfied customers leaving reviews) or a lack of avenues for negative feedback. The absence of negatives is not necessarily synonymous with the absence of issues.",
+    "**Unknown Aspects:** The analysis is only focused on \"food\\_quality\" and \"taste\". There might be other factors of service, ambiance, prices, waiting time, etc. that are not being considered.",
+    "**In-store signage:**  \"Love your pizza? Leave us a review on [Platform]!\"",
+    "**Receipt prompts:** Print a QR code or link on receipts leading to review platforms."
+  ],
+  "actionable_insights": [],
+  "summary": ""
+}
