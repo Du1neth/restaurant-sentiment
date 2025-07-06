@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}Report for {{ report.company.name }} - Restaurant Sentiment Analysis{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2>Analysis Report for {{ report.company.name }}</h2>
+                    <p class="text-muted">Generated on {{ report.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                </div>
+                <div>
+                    <a href="{{ url_for('company_detail', company_id=report.company.id) }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Company
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if report.status == 'completed' %}
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Overall Rating</h5>
+                    <div class="display-4 text-primary">{{ report.overall_rating }}/5.0</div>
+                    <div class="rating-stars">
+                        {% for i in range(5) %}
+                            {% if i < report.overall_rating %}
+                                <i class="fas fa-star"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Sentiment</h5>
+                    <div class="display-6 
+                        {% if report.overall_sentiment.lower() == 'positive' %}text-success
+                        {% elif report.overall_sentiment.lower() == 'negative' %}text-danger
+                        {% else %}text-warning{% endif %}">
+                        {{ report.overall_sentiment }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Sources Analyzed</h5>
+                    <div class="display-4 text-info">{{ report.sources_analyzed }}</div>
+                    <small class="text-muted">Review sources</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Report ID</h5>
+                    <div class="display-6 text-muted">#{{ report.id }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary -->
+    {% if report_data.summary %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-clipboard-list"></i> Summary</h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead">{{ report_data.summary }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Strengths and Weaknesses -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-thumbs-up"></i> Strengths</h5>
+                </div>
+                <div class="card-body">
+                    {% if report_data.strengths %}
+                    <ul class="list-unstyled">
+                        {% for strength in report_data.strengths %}
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> {{ strength }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted">No specific strengths identified.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-warning text-dark">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Areas for Improvement</h5>
+                </div>
+                <div class="card-body">
+                    {% if report_data.weaknesses %}
+                    <ul class="list-unstyled">
+                        {% for weakness in report_data.weaknesses %}
+                        <li class="mb-2">
+                            <i class="fas fa-arrow-right text-warning"></i> {{ weakness }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted">No specific weaknesses identified.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actionable Insights -->
+    {% if report_data.actionable_insights %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4><i class="fas fa-lightbulb"></i> Actionable Insights</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for insight in report_data.actionable_insights %}
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 border rounded">
+                                <i class="fas fa-arrow-right text-primary"></i> {{ insight }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Individual Reviews -->
+    {% if report_data.individual_reviews %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-comments"></i> Customer Reviews Analyzed</h4>
+                </div>
+                <div class="card-body">
+                    {% for review in report_data.individual_reviews %}
+                    <div class="border-bottom pb-3 mb-3">
+                        <blockquote class="blockquote">
+                            <p class="mb-0">{{ review }}</p>
+                        </blockquote>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <!-- Report not completed -->
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center py-5">
+                {% if report.status == 'processing' %}
+                <i class="fas fa-spinner fa-spin fa-5x text-warning mb-3"></i>
+                <h3 class="text-warning">Report Processing...</h3>
+                <p class="lead">We're analyzing customer feedback from across the web. This may take a few minutes.</p>
+                {% elif report.status == 'failed' %}
+                <i class="fas fa-exclamation-triangle fa-5x text-danger mb-3"></i>
+                <h3 class="text-danger">Report Generation Failed</h3>
+                <p class="lead">We encountered an error while generating this report. Please try again.</p>
+                {% else %}
+                <i class="fas fa-clock fa-5x text-secondary mb-3"></i>
+                <h3 class="text-secondary">Report Pending</h3>
+                <p class="lead">This report is queued for processing.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

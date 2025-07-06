@@ -1,0 +1,33 @@
+{
+  "restaurant_name": "Revon Restaurant",
+  "analysis_date": "20250706_223854",
+  "sources_analyzed": 5,
+  "analysis": {
+    "individual_reviews": [
+      "The primary piece of customer feedback is a quantitative rating on Facebook indicating that only 28% of 11 reviewers recommend the business.",
+      "A food reviewer on TikTok created a video about the bakery, but the comments section contained no feedback about Revon Bakers, with users instead suggesting other restaurants to review."
+    ],
+    "overall_sentiment": "Overwhelmingly Negative",
+    "overall_rating": 1.4,
+    "strengths": [
+      "Active social media presence on Facebook and TikTok.",
+      "Professional photography of products, particularly custom cakes for special occasions.",
+      "Offers custom cakes for birthdays and anniversaries."
+    ],
+    "weaknesses": [
+      "Extremely low customer recommendation rate, with only 28% of reviewers on Facebook recommending the business.",
+      "Complete lack of positive customer testimonials or engagement in the provided sources.",
+      "Missed marketing opportunity to engage with a food blogger's audience on TikTok, as the comments section was dominated by mentions of competitors."
+    ],
+    "actionable_insights": [
+      "Immediately investigate the reasons for the extremely low 28% recommendation score on Facebook by encouraging detailed feedback through surveys or in-store comment cards.",
+      "Conduct a full internal audit of product quality, comparing actual baked goods and restaurant meals against the professional photos used in marketing materials.",
+      "Implement a 'secret shopper' program to anonymously evaluate the entire customer experience, from ordering to service quality and store ambiance.",
+      "Develop a reputation management strategy to professionally respond to the negative recommendations on Facebook and demonstrate a commitment to improvement.",
+      "Train staff on proactively asking for feedback and encouraging genuinely satisfied customers to leave positive reviews online to counterbalance the negative score.",
+      "Re-evaluate the menu to identify and address underperforming items that may be contributing to customer dissatisfaction.",
+      "Launch a targeted promotion or tasting event to re-engage the local community and gather direct, real-time feedback on key products."
+    ],
+    "summary": "The analysis of Revon Restaurant (also known as Revon Bakers) reveals a critical business situation. Despite an active social media presence with professional-looking product photos, the single most important piece of feedback is an extremely poor 28% recommendation rate from 11 reviews on Facebook. This indicates severe, fundamental issues with the product, service, or overall customer experience. There is a complete absence of positive customer testimonials in the provided data. The business's marketing efforts, such as being featured by a food blogger, are ineffective as they generate no positive discussion about the brand itself. The immediate and urgent priority for management is to diagnose the root cause of this widespread customer dissatisfaction through direct feedback collection and a thorough internal audit of all operations."
+  }
+}

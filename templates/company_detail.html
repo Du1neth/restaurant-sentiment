@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}{{ company.name }} - Restaurant Sentiment Analysis{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2><i class="fas fa-utensils text-primary"></i> {{ company.name }}</h2>
+                    {% if company.location %}
+                    <p class="text-muted"><i class="fas fa-map-marker-alt"></i> {{ company.location }}</p>
+                    {% endif %}
+                </div>
+                <div>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                    <button class="btn btn-success generate-report-btn" data-company-id="{{ company.id }}">
+                        <i class="fas fa-chart-line"></i> Generate New Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if company.description %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">About</h5>
+                    <p class="card-text">{{ company.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-12">
+            <h4>Analysis Reports</h4>
+            {% if reports %}
+            <div class="row">
+                {% for report in reports %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h6 class="card-title">Report #{{ report.id }}</h6>
+                                {% if report.status == 'completed' %}
+                                <span class="badge bg-success">Completed</span>
+                                {% elif report.status == 'processing' %}
+                                <span class="badge bg-warning">Processing</span>
+                                {% elif report.status == 'failed' %}
+                                <span class="badge bg-danger">Failed</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Pending</span>
+                                {% endif %}
+                            </div>
+                            
+                            {% if report.status == 'completed' %}
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <span>Overall Rating:</span>
+                                    <div>
+                                        <span class="rating-stars">
+                                            {% for i in range(5) %}
+                                                {% if i < report.overall_rating %}
+                                                    <i class="fas fa-star"></i>
+                                                {% else %}
+                                                    <i class="far fa-star"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </span>
+                                        <span class="ms-2">{{ report.overall_rating }}/5.0</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mt-2">
+                                    <span>Sentiment:</span>
+                                    <span class="badge 
+                                        {% if report.overall_sentiment.lower() == 'positive' %}bg-success
+                                        {% elif report.overall_sentiment.lower() == 'negative' %}bg-danger
+                                        {% else %}bg-warning{% endif %}">
+                                        {{ report.overall_sentiment }}
+                                    </span>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mt-2">
+                                    <span>Sources:</span>
+                                    <span class="badge bg-info">{{ report.sources_analyzed }}</span>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="mb-3">
+                                <small class="text-muted">
+                                    Generated on {{ report.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            {% if report.status == 'completed' %}
+                            <a href="{{ url_for('view_report', report_id=report.id) }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-eye"></i> View Full Report
+                            </a>
+                            {% elif report.status == 'processing' %}
+                            <button class="btn btn-warning btn-sm" disabled>
+                                <i class="fas fa-spinner fa-spin"></i> Processing...
+                            </button>
+                            {% elif report.status == 'failed' %}
+                            <span class="text-danger">
+                                <i class="fas fa-exclamation-triangle"></i> Generation failed
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-chart-line fa-5x text-muted mb-3"></i>
+                <h4 class="text-muted">No Reports Yet</h4>
+                <p class="lead">Generate your first sentiment analysis report to get started.</p>
+                <button class="btn btn-primary btn-lg generate-report-btn" data-company-id="{{ company.id }}">
+                    <i class="fas fa-chart-line"></i> Generate First Report
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5>Generating Report...</h5>
+                <p class="text-muted">This may take a few minutes while we analyze customer feedback from across the web.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const generateButtons = document.querySelectorAll('.generate-report-btn');
+    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+    
+    generateButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const companyId = this.dataset.companyId;
+            
+            // Show loading modal
+            loadingModal.show();
+            
+            // Disable button
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            
+            // Make request to generate report
+            fetch(`/generate_report/${companyId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadingModal.hide();
+                
+                if (data.success) {
+                    // Show success message and redirect
+                    alert('Report generated successfully!');
+                    window.location.reload();
+                } else {
+                    // Show error message
+                    alert('Error: ' + data.error);
+                    
+                    // Re-enable button
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-chart-line"></i> Generate New Report';
+                }
+            })
+            .catch(error => {
+                loadingModal.hide();
+                alert('Error generating report: ' + error);
+                
+                // Re-enable button
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-chart-line"></i> Generate New Report';
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

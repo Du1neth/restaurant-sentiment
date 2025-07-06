@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Restaurant Sentiment Analysis{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Welcome back, {{ user.username }}!</h2>
+                <a href="{{ url_for('add_company') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add Restaurant
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% if companies %}
+    <div class="row">
+        {% for company in companies %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-utensils text-primary"></i> {{ company.name }}
+                    </h5>
+                    {% if company.location %}
+                    <p class="card-text">
+                        <i class="fas fa-map-marker-alt text-muted"></i> {{ company.location }}
+                    </p>
+                    {% endif %}
+                    {% if company.description %}
+                    <p class="card-text">{{ company.description[:100] }}{% if company.description|length > 100 %}...{% endif %}</p>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        <small class="text-muted">Added {{ company.created_at.strftime('%B %d, %Y') }}</small>
+                    </div>
+
+                    {% set reports = company_reports[company.id] %}
+                    {% if reports %}
+                    <div class="mb-3">
+                        <h6>Recent Reports:</h6>
+                        {% for report in reports %}
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                {% if report.status == 'completed' %}
+                                <span class="badge bg-success">{{ report.overall_rating }}/5.0</span>
+                                <span class="badge bg-info">{{ report.overall_sentiment }}</span>
+                                {% elif report.status == 'processing' %}
+                                <span class="badge bg-warning">Processing...</span>
+                                {% elif report.status == 'failed' %}
+                                <span class="badge bg-danger">Failed</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Pending</span>
+                                {% endif %}
+                            </div>
+                            <small class="text-muted">{{ report.created_at.strftime('%m/%d') }}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('company_detail', company_id=company.id) }}" class="btn btn-outline-primary">
+                            <i class="fas fa-eye"></i> View Details
+                        </a>
+                        <button class="btn btn-success generate-report-btn" data-company-id="{{ company.id }}">
+                            <i class="fas fa-chart-line"></i> Generate New Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="fas fa-utensils fa-5x text-muted mb-3"></i>
+                <h3 class="text-muted">No Restaurants Added Yet</h3>
+                <p class="lead">Get started by adding your first restaurant to analyze customer sentiment.</p>
+                <a href="{{ url_for('add_company') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus"></i> Add Your First Restaurant
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5>Generating Report...</h5>
+                <p class="text-muted">This may take a few minutes while we analyze customer feedback from across the web.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const generateButtons = document.querySelectorAll('.generate-report-btn');
+    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+    
+    generateButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const companyId = this.dataset.companyId;
+            
+            // Show loading modal
+            loadingModal.show();
+            
+            // Disable button
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            
+            // Make request to generate report
+            fetch(`/generate_report/${companyId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadingModal.hide();
+                
+                if (data.success) {
+                    // Show success message and redirect
+                    alert('Report generated successfully!');
+                    window.location.reload();
+                } else {
+                    // Show error message
+                    alert('Error: ' + data.error);
+                    
+                    // Re-enable button
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-chart-line"></i> Generate New Report';
+                }
+            })
+            .catch(error => {
+                loadingModal.hide();
+                alert('Error generating report: ' + error);
+                
+                // Re-enable button
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-chart-line"></i> Generate New Report';
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

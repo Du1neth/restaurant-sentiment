@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 mb-4">Transform Customer Feedback into Actionable Insights</h1>
+                <p class="lead mb-4">Our AI-powered platform analyzes restaurant reviews from across the web to provide comprehensive sentiment analysis and actionable business insights.</p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    {% if not session.user_id %}
+                    <a href="{{ url_for('signup') }}" class="btn btn-primary btn-lg me-md-2">Get Started</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg">Login</a>
+                    {% else %}
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">Go to Dashboard</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="text-center">
+                    <i class="fas fa-chart-line fa-10x opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12 text-center mb-5">
+            <h2>How It Works</h2>
+            <p class="lead">Simple, powerful, and automated</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="fas fa-plus-circle fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">1. Add Your Restaurant</h5>
+                    <p class="card-text">Register your restaurant or business with basic information like name and location.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="fas fa-search fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">2. AI Web Scraping</h5>
+                    <p class="card-text">Our AI automatically searches and extracts customer reviews from multiple sources across the web.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="fas fa-chart-bar fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">3. Get Insights</h5>
+                    <p class="card-text">Receive comprehensive analysis with sentiment scores, strengths, weaknesses, and actionable recommendations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2>Key Features</h2>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="d-flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-brain fa-2x text-primary"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h5>AI-Powered Analysis</h5>
+                        <p>Advanced natural language processing to understand customer sentiment and extract meaningful insights.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="d-flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-globe fa-2x text-primary"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h5>Multi-Source Scraping</h5>
+                        <p>Collects reviews from various platforms to provide comprehensive coverage of customer feedback.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="d-flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-clock fa-2x text-primary"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h5>Real-Time Reports</h5>
+                        <p>Generate fresh analysis reports on-demand to stay current with customer sentiment trends.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="d-flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-lightbulb fa-2x text-primary"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h5>Actionable Insights</h5>
+                        <p>Get specific recommendations to improve customer satisfaction and business performance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12 text-center">
+            <h2>Ready to Get Started?</h2>
+            <p class="lead">Join thousands of restaurants using AI to improve their customer experience</p>
+            {% if not session.user_id %}
+            <a href="{{ url_for('signup') }}" class="btn btn-primary btn-lg">Create Free Account</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

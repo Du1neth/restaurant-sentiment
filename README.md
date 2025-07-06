@@ -1,15 +1,22 @@
-# 🍽️ Restaurant Sentiment Analysis Tool
+# 🍽️ SentimentEats - Restaurant Sentiment Analysis Platform
 
-**Dynamic Restaurant Review Analysis with Web Scraping & AI**
+**AI-Powered Web Application for Restaurant Review Analysis**
 
-This tool automatically scrapes restaurant reviews from the web and generates comprehensive sentiment analysis reports using advanced AI technology.
+SentimentEats is a comprehensive web application that automatically scrapes restaurant reviews from across the web and generates detailed sentiment analysis reports using advanced AI technology. Perfect for restaurant owners, managers, and business consultants who want to understand customer feedback and improve their business.
 
 ## 🚀 Features
 
+### Web Application
+- **User Authentication**: Secure signup and login system
+- **Multi-Restaurant Management**: Add and manage multiple restaurants
+- **Interactive Dashboard**: Visual overview of all your restaurants and reports
+- **Real-time Report Generation**: Generate fresh analysis reports on-demand
+- **Responsive Design**: Works perfectly on desktop and mobile devices
+
+### AI Analysis Engine
 - **Web Scraping**: Automatically finds and extracts reviews from trusted sites (Google, Yelp, TripAdvisor, etc.)
 - **AI Analysis**: Uses Google Gemini AI for sophisticated sentiment and aspect analysis
-- **Comprehensive Reports**: Generates detailed HTML reports with actionable insights
-- **Easy to Use**: Simple command-line interface - just provide a restaurant name
+- **Comprehensive Reports**: Generates detailed insights with actionable recommendations
 - **Trusted Sources**: Only scrapes from verified review platforms
 
 ## 📋 Prerequisites
@@ -60,16 +67,27 @@ CONFIDENCE_THRESHOLD=0.8
 
 ## 🎯 Usage
 
-Simply run the tool and provide a restaurant name:
+### Web Application (Recommended)
+
+Start the web application:
+
+```bash
+python app.py
+```
+
+Then visit `http://localhost:5000` in your browser to:
+1. 📝 Create an account or login
+2. 🏪 Add your restaurants
+3. 📊 Generate sentiment analysis reports
+4. 📈 View detailed insights and recommendations
+
+### Command Line Tool
+
+For direct analysis, use the command line tool:
 
 ```bash
 python run.py
 ```
-
-The tool will:
-1. 🔍 Search for restaurant reviews across the web
-2. 📊 Extract and analyze reviews using AI
-3. 📈 Generate a comprehensive report with actionable insights
 
 ### Example:
 ```bash
